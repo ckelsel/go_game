@@ -9,4 +9,7 @@ type IServer interface {
 
     // 运行服务器
     Run()
+
+    // 路由功能
+    AddRouter(router IRouter)
 }

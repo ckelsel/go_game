@@ -17,11 +17,12 @@ type Connection struct {
 	// 当前链接的状态
 	IsClosed bool
 
-	// 当前链接的回调函数
-	HandleFunc xiface.HandleFunc
-
 	// 告知当前链接已经退出的 channel
 	ExitChan chan bool
+
+	// 当前链接的路由
+	Router xiface.IRouter
+
 }
 
 func (c *Connection) StartReader() {
@@ -39,11 +40,21 @@ func (c *Connection) StartReader() {
 			break;
 		}
 
-		err = c.HandleFunc(c.Conn, buf, cnt)
-		if err != nil {
-			fmt.Println("HandleFunc err ", err);
-			continue;
+		// 封装Request
+		req := Request {
+			Conn : c,
+			Data : buf[:cnt],
 		}
+		
+		go func (request xiface.IRequest) {
+			c.Router.PreHandle(request)
+
+			c.Router.Handle(request)
+
+			c.Router.PostHandle(request)
+		}(&req)
+		
+
 	}
 }
 
@@ -95,11 +106,11 @@ func (c *Connection) Send(data []byte) error {
 
 // 初始化方法
 
-func NewConnection(conn *net.TCPConn, connID uint32, callback xiface.HandleFunc) *Connection {
+func NewConnection(conn *net.TCPConn, connID uint32, router xiface.IRouter) *Connection {
 	connection := &Connection {
 		Conn: conn,
 		ConnID: connID,
-		HandleFunc:callback,
+		Router:router,
 		IsClosed:false,
 		ExitChan:make(chan bool, 1),
 	}

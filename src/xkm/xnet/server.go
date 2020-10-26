@@ -18,15 +18,12 @@ type Server struct {
 
     // 服务器的IPv4 Ipv6
     IPVersion string
+
+    // 路由，处理所有的connection
+    Router xiface.IRouter
 }
 
-func callback(c *net.TCPConn, data []byte, cnt int) error {
-    fmt.Println("callback called")
 
-    _, err := c.Write(data[:cnt])
-
-    return err
-}
 
 // 启动服务器
 func (s *Server) Start() {
@@ -61,7 +58,7 @@ func (s *Server) Start() {
 
         fmt.Println("player incoming")
         
-        c := NewConnection(conn, connID, callback)
+        c := NewConnection(conn, connID, s.Router)
         connID++
 
         go c.Start()
@@ -79,6 +76,11 @@ func (s *Server) Run() {
     s.Start()
 }
 
+func (s *Server) AddRouter(router xiface.IRouter) {
+    fmt.Println("AddRouter success")
+    s.Router = router
+}
+
 
 func NewServer(name string) xiface.IServer {
     s := &Server {
@@ -86,6 +88,7 @@ func NewServer(name string) xiface.IServer {
         IPVersion: "tcp4",
         IP:"0.0.0.0",
         Port:8889,
+        Router:nil,
     }
 
     return s
