@@ -20,9 +20,17 @@ type Server struct {
     IPVersion string
 }
 
+func callback(c *net.TCPConn, data []byte, cnt int) error {
+    fmt.Println("callback called")
+
+    _, err := c.Write(data[:cnt])
+
+    return err
+}
+
 // 启动服务器
 func (s *Server) Start() {
-    fmt.Println("Listen on IP %s, Port %d, start", s.IP, s.Port)
+    fmt.Printf("Server %s Listen on IP %s, Port %d, start\n", s.Name, s.IP, s.Port)
 
     // 1. 获取TCP的addr
     addr, err := net.ResolveTCPAddr(s.IPVersion, fmt.Sprintf("%s:%d", s.IP, s.Port))
@@ -38,7 +46,10 @@ func (s *Server) Start() {
         return
     }
 
-    fmt.Println("Listen on IP %s, Port %d, success", s.IP, s.Port)
+    fmt.Printf("Listen on IP %s, Port %d, success\n", s.IP, s.Port)
+
+    var connID uint32
+    connID = 0
 
     // 3. 等待客户端连接
     for {
@@ -50,18 +61,10 @@ func (s *Server) Start() {
 
         fmt.Println("player incoming")
         
-        go func() {
-            for {
-                buf := make([]byte, 512)
-                cnt, err:= conn.Read(buf)
-                if err != nil {
-                    fmt.Println("Read err ", err)
-                    return;
-                }
+        c := NewConnection(conn, connID, callback)
+        connID++
 
-                conn.Write(buf[:cnt])
-            }
-        }()
+        go c.Start()
     }
 }
 
