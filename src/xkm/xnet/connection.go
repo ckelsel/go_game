@@ -15,10 +15,10 @@ type Connection struct {
 	ConnID uint32
 
 	// 当前链接的状态
-	isClosed bool
+	IsClosed bool
 
 	// 当前链接的回调函数
-	handleAPI xiface.HandleFunc
+	HandleFunc xiface.HandleFunc
 
 	// 告知当前链接已经退出的 channel
 	ExitChan chan bool
@@ -39,9 +39,9 @@ func (c *Connection) StartReader() {
 			break;
 		}
 
-		err = c.handleAPI(c.Conn, buf, cnt)
+		err = c.HandleFunc(c.Conn, buf, cnt)
 		if err != nil {
-			fmt.Println("handleAPI err ", err);
+			fmt.Println("HandleFunc err ", err);
 			continue;
 		}
 	}
@@ -58,9 +58,11 @@ func (c *Connection) Start(){
 func (c *Connection) Stop() {
 	fmt.Println("Stop, connID ", c.ConnID)
 
-	if c.isClosed {
+	if c.IsClosed {
 		return
 	}
+
+	c.IsClosed = true
 
 	// 关闭sock
 	c.Conn.Close()
@@ -97,8 +99,8 @@ func NewConnection(conn *net.TCPConn, connID uint32, callback xiface.HandleFunc)
 	connection := &Connection {
 		Conn: conn,
 		ConnID: connID,
-		handleAPI:callback,
-		isClosed:false,
+		HandleFunc:callback,
+		IsClosed:false,
 		ExitChan:make(chan bool, 1),
 	}
 	return connection
