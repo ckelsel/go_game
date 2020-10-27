@@ -1,9 +1,12 @@
 package xnet
 
 
-import "xkm/xiface"
-import "fmt"
-import "net"
+import (
+	"xkm/utils"
+	"xkm/xiface"
+	"fmt"
+	"net"
+)
 
 type Server struct {
     // 服务器名称
@@ -27,7 +30,15 @@ type Server struct {
 
 // 启动服务器
 func (s *Server) Start() {
-    fmt.Printf("Server %s Listen on IP %s, Port %d, start\n", s.Name, s.IP, s.Port)
+    fmt.Printf("Server %s, Version %s.%s.%s, MaxConn %d, MaxPacketSize %d\n",
+            utils.GlobalObject.ServerName, 
+            utils.GlobalObject.MajorVersion,
+            utils.GlobalObject.MinorVersion,
+            utils.GlobalObject.PatchVersion,
+            utils.GlobalObject.MaxConn,
+            utils.GlobalObject.MaxPacketSize)
+
+    fmt.Printf("Listen on IP %s, Port %d, start\n", s.IP, s.Port)
 
     // 1. 获取TCP的addr
     addr, err := net.ResolveTCPAddr(s.IPVersion, fmt.Sprintf("%s:%d", s.IP, s.Port))
@@ -82,14 +93,18 @@ func (s *Server) AddRouter(router xiface.IRouter) {
 }
 
 
-func NewServer(name string) xiface.IServer {
+func NewServer() xiface.IServer {
+    utils.Init()
+
     s := &Server {
-        Name: name,
+        Name: utils.GlobalObject.ServerName,
         IPVersion: "tcp4",
-        IP:"0.0.0.0",
-        Port:8889,
+        IP:utils.GlobalObject.Host,
+        Port:utils.GlobalObject.Port,
         Router:nil,
     }
+    
+    utils.GlobalObject.TCPServer = s
 
     return s
 }
