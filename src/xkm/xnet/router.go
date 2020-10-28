@@ -10,16 +10,16 @@ type BaseRouter struct {
 }
 
 // 处理业务之前的回调
-func (b *BaseRouter) PreHandle(request xiface.IRequest) {
+func (b *BaseRouter) PreHandle(request xiface.IXRequest) {
 
 }
 
 // 处理业务的主回调
-func (b *BaseRouter) Handle(request xiface.IRequest) {
+func (b *BaseRouter) Handle(request xiface.IXRequest) {
 
 }
 
 // 处理业务之后的回调
-func (b *BaseRouter ) PostHandle(request xiface.IRequest) {
+func (b *BaseRouter) PostHandle(request xiface.IXRequest) {
 
 }

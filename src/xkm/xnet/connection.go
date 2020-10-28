@@ -6,7 +6,6 @@ import (
 	"xkm/xiface"
 )
 
-
 type Connection struct {
 	// 当前链接的socket
 	Conn *net.TCPConn
@@ -22,7 +21,6 @@ type Connection struct {
 
 	// 当前链接的路由
 	Router xiface.IRouter
-
 }
 
 func (c *Connection) StartReader() {
@@ -37,29 +35,28 @@ func (c *Connection) StartReader() {
 		cnt, err := c.Conn.Read(buf)
 		if err != nil {
 			fmt.Println("Read err ", err)
-			break;
+			break
 		}
 
 		// 封装Request
-		req := Request {
-			Conn : c,
-			Data : buf[:cnt],
+		req := XRequest{
+			Conn: c,
+			Data: buf[:cnt],
 		}
-		
-		go func (request xiface.IRequest) {
+
+		go func(request xiface.IXRequest) {
 			c.Router.PreHandle(request)
 
 			c.Router.Handle(request)
 
 			c.Router.PostHandle(request)
 		}(&req)
-		
 
 	}
 }
 
 // 启动链接，开始工作
-func (c *Connection) Start(){
+func (c *Connection) Start() {
 	fmt.Println("Start, connID ", c.ConnID)
 
 	go c.StartReader()
@@ -82,37 +79,36 @@ func (c *Connection) Stop() {
 	close(c.ExitChan)
 }
 
-
 // 获取当前链接绑定的socket
-func (c *Connection)  GetTCPConnection() *net.TCPConn {
+func (c *Connection) GetTCPConnection() *net.TCPConn {
 	return c.Conn
 }
 
 // 获取当前链接的ID
-func (c *Connection)  GetConnID() uint32 {
+func (c *Connection) GetConnID() uint32 {
 	return c.ConnID
 }
 
 // 获取远程客户端的TCP状态，IP Port
-func (c *Connection)  RemoteAddr() net.Addr {
+func (c *Connection) RemoteAddr() net.Addr {
 	return c.Conn.RemoteAddr()
 }
 
 // 发送数据
 func (c *Connection) Send(data []byte) error {
 	_, err := c.Conn.Write(data)
-	return err;
+	return err
 }
 
 // 初始化方法
 
 func NewConnection(conn *net.TCPConn, connID uint32, router xiface.IRouter) *Connection {
-	connection := &Connection {
-		Conn: conn,
-		ConnID: connID,
-		Router:router,
-		IsClosed:false,
-		ExitChan:make(chan bool, 1),
+	connection := &Connection{
+		Conn:     conn,
+		ConnID:   connID,
+		Router:   router,
+		IsClosed: false,
+		ExitChan: make(chan bool, 1),
 	}
 	return connection
 }

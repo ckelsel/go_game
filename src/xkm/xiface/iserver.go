@@ -1,15 +1,15 @@
 package xiface
 
 type IServer interface {
-    // 启动服务器
-    Start()
+	// 启动服务器
+	Start()
 
-    // 停止服务器
-    Stop()
+	// 停止服务器
+	Stop()
 
-    // 运行服务器
-    Run()
+	// 运行服务器
+	Run()
 
-    // 路由功能
-    AddRouter(router IRouter)
+	// 路由功能
+	AddRouter(router IRouter)
 }

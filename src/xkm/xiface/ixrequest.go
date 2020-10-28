@@ -1,6 +1,7 @@
 package xiface
 
-type IRequest interface {
+// IXRequest 接口
+type IXRequest interface {
 	// 得到当前链接
 	GetConn() IConnection
 

@@ -4,14 +4,12 @@ import (
 	"net"
 )
 
-
 type IConnection interface {
 	// 启动链接，开始工作
 	Start()
 
 	// 停止链接
 	Stop()
-
 
 	// 获取当前链接绑定的socket
 	GetTCPConnection() *net.TCPConn
