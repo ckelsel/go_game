@@ -1,5 +1,6 @@
 package xiface
 
+// IXMessage 定义客户端、服务端的TLV消息格式
 type IXMessage interface {
 	// 获取消息ID
 	GetID() uint32

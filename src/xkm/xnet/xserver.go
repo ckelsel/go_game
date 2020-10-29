@@ -7,7 +7,7 @@ import (
 	"xkm/xiface"
 )
 
-type Server struct {
+type XServer struct {
 	// 服务器名称
 	Name string
 
@@ -26,9 +26,9 @@ type Server struct {
 }
 
 // 启动服务器
-func (s *Server) Start() {
-	fmt.Printf("Server %s, Version %s.%s.%s, MaxConn %d, MaxPacketSize %d\n",
-		utils.GlobalObject.ServerName,
+func (s *XServer) Start() {
+	fmt.Printf("XServer %s, Version %s.%s.%s, MaxConn %d, MaxPacketSize %d\n",
+		utils.GlobalObject.XServerName,
 		utils.GlobalObject.MajorVersion,
 		utils.GlobalObject.MinorVersion,
 		utils.GlobalObject.PatchVersion,
@@ -74,31 +74,31 @@ func (s *Server) Start() {
 }
 
 // 停止服务器
-func (s *Server) Stop() {
+func (s *XServer) Stop() {
 }
 
 // 运行服务器
-func (s *Server) Run() {
+func (s *XServer) Run() {
 	s.Start()
 }
 
-func (s *Server) AddRouter(router xiface.IRouter) {
+func (s *XServer) AddRouter(router xiface.IRouter) {
 	fmt.Println("AddRouter success")
 	s.Router = router
 }
 
-func NewServer() xiface.IServer {
+func NewXServer() xiface.IXServer {
 	utils.Init()
 
-	s := &Server{
-		Name:      utils.GlobalObject.ServerName,
+	s := &XServer{
+		Name:      utils.GlobalObject.XServerName,
 		IPVersion: "tcp4",
 		IP:        utils.GlobalObject.Host,
 		Port:      utils.GlobalObject.Port,
 		Router:    nil,
 	}
 
-	utils.GlobalObject.TCPServer = s
+	utils.GlobalObject.TCPXServer = s
 
 	return s
 }

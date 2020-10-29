@@ -1,6 +1,6 @@
 package xiface
 
-type IServer interface {
+type IXServer interface {
 	// 启动服务器
 	Start()
 

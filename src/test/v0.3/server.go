@@ -29,7 +29,7 @@ func (this *EchoRouter) PostHandle(request xiface.IRequest) {
 
 func main() {
 
-    s := xnet.NewServer("v0.3")
+    s := xnet.NewXServer("v0.3")
 
     router := EchoRouter{}
 

@@ -1,6 +1,6 @@
 package xnet
 
-// XMessage 定义客户端、服务端的消息格式
+// XMessage 定义客户端、服务端的TLV消息格式
 type XMessage struct {
 	// 获取消息ID
 	ID uint32

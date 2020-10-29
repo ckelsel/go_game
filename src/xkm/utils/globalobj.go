@@ -13,8 +13,8 @@ type GlobalObj struct {
 	// 基础配置
 	//
 
-	// 全局Server对象
-	TCPServer xiface.IServer
+	// 全局XServer对象
+	TCPXServer xiface.IXServer
 
 	// 监听的IP
 	Host string
@@ -23,7 +23,7 @@ type GlobalObj struct {
 	Port int
 
 	// 服务器名称
-	ServerName string
+	XServerName string
 
 	//
 	// 高级配置
@@ -61,10 +61,10 @@ func (g *GlobalObj) Reload() {
 
 func Init() {
 	GlobalObject = &GlobalObj {
-		TCPServer:nil,
+		TCPXServer:nil,
 		Host:"0.0.0.0",
 		Port:8889,
-		ServerName:"Good Game",
+		XServerName:"Good Game",
 
 		MajorVersion:"0",
 		MinorVersion:"4",
