@@ -1,8 +1,9 @@
 package utils
 
 import (
-	"io/ioutil"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"xkm/xiface"
 )
 
@@ -28,7 +29,7 @@ type GlobalObj struct {
 	//
 	// 高级配置
 	//
-	
+
 	// 主版本号
 	MajorVersion string
 
@@ -39,7 +40,7 @@ type GlobalObj struct {
 	PatchVersion string
 
 	// 允许的最大连接数
-	MaxConn	uint32
+	MaxConn uint32
 
 	// 数据包的最大值
 	MaxPacketSize uint32
@@ -50,7 +51,8 @@ var GlobalObject *GlobalObj
 func (g *GlobalObj) Reload() {
 	data, err := ioutil.ReadFile("conf/gg.conf")
 	if err != nil {
-		panic(err)
+		fmt.Println("config/gg.conf not found")
+		return
 	}
 
 	err = json.Unmarshal(data, &GlobalObject)
@@ -60,17 +62,17 @@ func (g *GlobalObj) Reload() {
 }
 
 func Init() {
-	GlobalObject = &GlobalObj {
-		TCPXServer:nil,
-		Host:"0.0.0.0",
-		Port:8889,
-		XServerName:"Good Game",
+	GlobalObject = &GlobalObj{
+		TCPXServer:  nil,
+		Host:        "0.0.0.0",
+		Port:        8889,
+		XServerName: "Good Game",
 
-		MajorVersion:"0",
-		MinorVersion:"4",
-		PatchVersion:"0",
-		MaxConn:1000,
-		MaxPacketSize:512,
+		MajorVersion:  "0",
+		MinorVersion:  "4",
+		PatchVersion:  "0",
+		MaxConn:       1000,
+		MaxPacketSize: 512,
 	}
 
 	GlobalObject.Reload()

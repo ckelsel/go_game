@@ -52,6 +52,7 @@ func (dp *XDataPack) Pack(m xiface.IXMessage) ([]byte, error) {
 }
 
 // UnPack 拆包，数据流->IXMessage
+// 只读取Header数据（L，T），data需要再次读取
 func (dp *XDataPack) UnPack(data []byte) (xiface.IXMessage, error) {
 	msg := &XMessage{}
 
@@ -73,11 +74,7 @@ func (dp *XDataPack) UnPack(data []byte) (xiface.IXMessage, error) {
 		return nil, err
 	}
 
-	// 读取Data
-	err = binary.Read(buf, binary.LittleEndian, &msg.Data)
-	if err != nil {
-		return nil, err
-	}
+	// 未读取Data
 
 	return msg, nil
 }
