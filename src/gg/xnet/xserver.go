@@ -3,8 +3,8 @@ package xnet
 import (
 	"fmt"
 	"net"
-	"xkm/utils"
-	"xkm/xiface"
+	"gg/utils"
+	"gg/xiface"
 )
 
 type XServer struct {

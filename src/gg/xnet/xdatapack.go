@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"encoding/binary"
 	"errors"
-	"xkm/utils"
-	"xkm/xiface"
+	"gg/utils"
+	"gg/xiface"
 )
 
 // XDataPack 封包、拆包

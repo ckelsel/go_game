@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"xkm/xiface"
-	"xkm/xnet"
+	"gg/xiface"
+	"gg/xnet"
 )
 
 

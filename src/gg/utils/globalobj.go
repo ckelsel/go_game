@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"xkm/xiface"
+	"gg/xiface"
 )
 
 // 全局配置文件

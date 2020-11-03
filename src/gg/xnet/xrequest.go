@@ -1,7 +1,7 @@
 package xnet
 
 import (
-	"xkm/xiface"
+	"gg/xiface"
 )
 
 // XRequest 链接封装为一个请求

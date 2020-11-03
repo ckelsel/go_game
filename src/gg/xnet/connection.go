@@ -3,7 +3,7 @@ package xnet
 import (
 	"fmt"
 	"net"
-	"xkm/xiface"
+	"gg/xiface"
 )
 
 type Connection struct {

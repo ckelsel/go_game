@@ -6,10 +6,10 @@ import (
 	"net"
 	"testing"
 	"time"
-	"xkm/utils"
+	"gg/utils"
 )
 
-// go test xkm/xnet -v
+// go test gg/xnet -v
 // 封包、拆包的单元测试
 func TestXDataPack(t *testing.T) {
 	utils.Init()

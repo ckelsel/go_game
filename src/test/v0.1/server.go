@@ -1,6 +1,6 @@
 package main
 
-import "xkm/xnet"
+import "gg/xnet"
 
 
 func main() {

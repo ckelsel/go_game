@@ -1,7 +1,7 @@
 package xnet
 
 import (
-	"xkm/xiface"
+	"gg/xiface"
 )
 
 // 处理业务的默认路由,默认空实现
