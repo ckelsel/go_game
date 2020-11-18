@@ -12,6 +12,15 @@ type XMessage struct {
 	Data []byte
 }
 
+// NewXMessage 创建一个消息
+func NewXMessage(id uint32, data []byte) *XMessage {
+	return &XMessage{
+		ID:     id,
+		Length: uint32(len(data)),
+		Data:   data,
+	}
+}
+
 // GetID 获取消息ID
 func (m *XMessage) GetID() uint32 {
 	return m.ID

@@ -7,18 +7,23 @@ import (
 // XRequest 链接封装为一个请求
 type XRequest struct {
 	// 链接
-	Conn xiface.IConnection
+	Conn xiface.IXConnection
 
 	// 客户端发送过来的数据
-	Data []byte
+	msg xiface.IXMessage
 }
 
 // GetConn 得到当前链接
-func (r *XRequest) GetConn() xiface.IConnection {
+func (r *XRequest) GetConn() xiface.IXConnection {
 	return r.Conn
 }
 
-// GetData 得到请求的数据
-func (r *XRequest) GetData() []byte {
-	return r.Data
+// GetMsgData 得到请求的数据
+func (r *XRequest) GetMsgData() []byte {
+	return r.msg.GetData()
+}
+
+// GetMsgID 得到请求的数据ID
+func (r *XRequest) GetMsgID() uint32 {
+	return r.msg.GetID()
 }

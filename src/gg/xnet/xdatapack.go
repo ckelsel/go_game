@@ -25,7 +25,7 @@ func (dp *XDataPack) GetHeaderLength() uint32 {
 	return 8
 }
 
-// Pack 封包，IXMessage->数据流
+// Pack 封包，格式化的IXMessage->二进制流
 func (dp *XDataPack) Pack(m xiface.IXMessage) ([]byte, error) {
 	// 创建一个缓冲区
 	buf := bytes.NewBuffer([]byte{})
@@ -51,7 +51,7 @@ func (dp *XDataPack) Pack(m xiface.IXMessage) ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-// UnPack 拆包，数据流->IXMessage
+// UnPack 拆包，二进制流->IXMessage
 // 只读取Header数据（L，T），data需要再次读取
 func (dp *XDataPack) UnPack(data []byte) (xiface.IXMessage, error) {
 	msg := &XMessage{}

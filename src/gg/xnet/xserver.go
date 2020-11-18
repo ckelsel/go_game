@@ -2,9 +2,9 @@ package xnet
 
 import (
 	"fmt"
-	"net"
 	"gg/utils"
 	"gg/xiface"
+	"net"
 )
 
 type XServer struct {
@@ -22,7 +22,7 @@ type XServer struct {
 	IPVersion string
 
 	// 路由，处理所有的connection
-	Router xiface.IRouter
+	Router xiface.IXRouter
 }
 
 // 启动服务器
@@ -82,7 +82,7 @@ func (s *XServer) Run() {
 	s.Start()
 }
 
-func (s *XServer) AddRouter(router xiface.IRouter) {
+func (s *XServer) AddRouter(router xiface.IXRouter) {
 	fmt.Println("AddRouter success")
 	s.Router = router
 }
