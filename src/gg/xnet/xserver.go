@@ -7,6 +7,7 @@ import (
 	"net"
 )
 
+// XServer 服务端
 type XServer struct {
 	// 服务器名称
 	Name string
@@ -22,10 +23,10 @@ type XServer struct {
 	IPVersion string
 
 	// 路由，处理所有的connection
-	Router xiface.IXRouter
+	Router xiface.IXMessageRouter
 }
 
-// 启动服务器
+// Start 启动服务器
 func (s *XServer) Start() {
 	fmt.Printf("XServer %s, Version %s.%s.%s, MaxConn %d, MaxPacketSize %d\n",
 		utils.GlobalObject.XServerName,
@@ -73,20 +74,22 @@ func (s *XServer) Start() {
 	}
 }
 
-// 停止服务器
+// Stop 停止服务器
 func (s *XServer) Stop() {
 }
 
-// 运行服务器
+// Run 运行服务器
 func (s *XServer) Run() {
 	s.Start()
 }
 
-func (s *XServer) AddRouter(router xiface.IXRouter) {
+// AddRouter 添加消息处理路由
+func (s *XServer) AddRouter(msgid uint32, router xiface.IXRouter) {
 	fmt.Println("AddRouter success")
-	s.Router = router
+	s.Router.AddRouter(msgid, router)
 }
 
+// NewXServer 初始化
 func NewXServer() xiface.IXServer {
 	utils.Init()
 
@@ -95,7 +98,7 @@ func NewXServer() xiface.IXServer {
 		IPVersion: "tcp4",
 		IP:        utils.GlobalObject.Host,
 		Port:      utils.GlobalObject.Port,
-		Router:    nil,
+		Router:    NewXMessageRouter(),
 	}
 
 	utils.GlobalObject.TCPXServer = s

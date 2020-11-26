@@ -23,7 +23,7 @@ type XConnection struct {
 	ExitChan chan bool
 
 	// 当前链接的路由
-	Router xiface.IXRouter
+	Router xiface.IXMessageRouter
 }
 
 // StartReader 循环读取数据
@@ -66,11 +66,7 @@ func (c *XConnection) StartReader() {
 		}
 
 		go func(request xiface.IXRequest) {
-			c.Router.PreHandle(request)
-
 			c.Router.Handle(request)
-
-			c.Router.PostHandle(request)
 		}(&req)
 
 	}
@@ -124,7 +120,7 @@ func (c *XConnection) Send(data []byte) error {
 // SendMsg 发送TLV消息
 func (c *XConnection) SendMsg(id uint32, data []byte) error {
 	if c.IsClosed {
-		return errors.New("Connection has closed.")
+		return errors.New("Connection has closed. ")
 	}
 
 	dp := NewXDataPack()
@@ -144,7 +140,7 @@ func (c *XConnection) SendMsg(id uint32, data []byte) error {
 }
 
 // NewConnection 初始化方法
-func NewConnection(conn *net.TCPConn, connID uint32, router xiface.IXRouter) *XConnection {
+func NewConnection(conn *net.TCPConn, connID uint32, router xiface.IXMessageRouter) *XConnection {
 	connection := &XConnection{
 		Conn:     conn,
 		ConnID:   connID,

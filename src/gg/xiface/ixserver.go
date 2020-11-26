@@ -12,5 +12,5 @@ type IXServer interface {
 	Run()
 
 	// AddRouter 用户自定义的路由功能
-	AddRouter(router IXRouter)
+	AddRouter(msgid uint32, router IXRouter)
 }
