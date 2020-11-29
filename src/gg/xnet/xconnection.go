@@ -22,8 +22,33 @@ type XConnection struct {
 	// 告知当前链接已经退出的 channel
 	ExitChan chan bool
 
+	// 读写goroutine的通信channel，无缓冲
+	MsgChan chan []byte
+
 	// 当前链接的路由
 	Router xiface.IXMessageRouter
+}
+
+// StartWriter 循环读取channel，发送给客户端
+func (c *XConnection) StartWriter() {
+	fmt.Println("Enter StartWriter, connID ", c.ConnID)
+	defer fmt.Println("Leave StartWriter connID", c.ConnID, ", ", c.RemoteAddr().String())
+
+	for {
+		select {
+		case data := <-c.MsgChan:
+			_, err := c.Conn.Write(data)
+			if err != nil {
+				fmt.Println("Write failed, ", err)
+				break
+			}
+
+		case <-c.ExitChan:
+			fmt.Println("Writer receive exit msg")
+			// Reader已退出， Writer也退出
+			return
+		}
+	}
 }
 
 // StartReader 循环读取数据
@@ -32,7 +57,7 @@ func (c *XConnection) StartReader() {
 
 	// defer在函数返回前执行
 	defer fmt.Println("Leave StartReader connID", c.ConnID)
-	defer c.Conn.Close()
+	defer c.Stop()
 
 	for {
 		dp := NewXDataPack()
@@ -77,6 +102,8 @@ func (c *XConnection) Start() {
 	fmt.Println("Start, connID ", c.ConnID)
 
 	go c.StartReader()
+
+	go c.StartWriter()
 }
 
 // Stop 停止链接
@@ -89,11 +116,18 @@ func (c *XConnection) Stop() {
 
 	c.IsClosed = true
 
+	// 通知Writer退出
+	//c.ExitChan <- true
+
 	// 关闭sock
 	c.Conn.Close()
 
+	c.ExitChan <- true
+
 	// 释放资源
 	close(c.ExitChan)
+
+	close(c.MsgChan)
 }
 
 // GetTCPConnection 获取当前链接绑定的socket
@@ -131,11 +165,8 @@ func (c *XConnection) SendMsg(id uint32, data []byte) error {
 		return err
 	}
 
-	_, err = c.Conn.Write(bin)
-	if err != nil {
-		fmt.Println("Write failed, ", id)
-		return err
-	}
+	c.MsgChan <- bin
+
 	return err
 }
 
@@ -147,6 +178,7 @@ func NewConnection(conn *net.TCPConn, connID uint32, router xiface.IXMessageRout
 		Router:   router,
 		IsClosed: false,
 		ExitChan: make(chan bool, 1),
+		MsgChan:  make(chan []byte),
 	}
 	return connection
 }
