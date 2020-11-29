@@ -7,4 +7,10 @@ type IXMessageRouter interface {
 
 	// AddRouter 为特定的消息添加Router
 	AddRouter(id uint32, router IXRouter)
+
+	// PushMessage 消息添加到消息队列
+	PushMessage(request IXRequest)
+
+	// StartWorkerPool 启动线程池
+	StartWorkerPool()
 }

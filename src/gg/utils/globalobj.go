@@ -3,12 +3,11 @@ package utils
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"gg/xiface"
+	"io/ioutil"
 )
 
-// 全局配置文件
-
+// GlobalObj 全局配置文件
 type GlobalObj struct {
 	//
 	// 基础配置
@@ -44,10 +43,18 @@ type GlobalObj struct {
 
 	// 数据包的最大值
 	MaxPacketSize uint32
+
+	// 工作池的大小
+	WorkerPoolSize uint32
+
+	// 消息队列的大小（框架限制)
+	MaxTaskQueueSize uint32
 }
 
+// GlobalObject 全局配置实例
 var GlobalObject *GlobalObj
 
+// Reload 读取配置文件
 func (g *GlobalObj) Reload() {
 	data, err := ioutil.ReadFile("conf/gg.conf")
 	if err != nil {
@@ -61,6 +68,7 @@ func (g *GlobalObj) Reload() {
 	}
 }
 
+// Init 全局配置初始化
 func Init() {
 	GlobalObject = &GlobalObj{
 		TCPXServer:  nil,
@@ -68,11 +76,13 @@ func Init() {
 		Port:        8889,
 		XServerName: "Good Game",
 
-		MajorVersion:  "0",
-		MinorVersion:  "4",
-		PatchVersion:  "0",
-		MaxConn:       1000,
-		MaxPacketSize: 512,
+		MajorVersion:     "0",
+		MinorVersion:     "4",
+		PatchVersion:     "0",
+		MaxConn:          1024,
+		MaxPacketSize:    512,
+		WorkerPoolSize:   10,
+		MaxTaskQueueSize: 1024,
 	}
 
 	GlobalObject.Reload()

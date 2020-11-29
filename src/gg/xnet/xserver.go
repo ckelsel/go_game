@@ -38,6 +38,8 @@ func (s *XServer) Start() {
 
 	fmt.Printf("Listen on IP %s, Port %d, start\n", s.IP, s.Port)
 
+	s.Router.StartWorkerPool()
+
 	// 1. 获取TCP的addr
 	addr, err := net.ResolveTCPAddr(s.IPVersion, fmt.Sprintf("%s:%d", s.IP, s.Port))
 	if err != nil {

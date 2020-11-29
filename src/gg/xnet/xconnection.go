@@ -3,6 +3,7 @@ package xnet
 import (
 	"errors"
 	"fmt"
+	"gg/utils"
 	"gg/xiface"
 	"io"
 	"net"
@@ -85,15 +86,16 @@ func (c *XConnection) StartReader() {
 		}
 
 		// 封装Request
-		req := XRequest{
+		request := XRequest{
 			Conn: c,
 			msg:  msg,
 		}
 
-		go func(request xiface.IXRequest) {
-			c.Router.Handle(request)
-		}(&req)
-
+		if utils.GlobalObject.WorkerPoolSize > 0 {
+			c.Router.PushMessage(&request)
+		} else {
+			go c.Router.Handle(&request)
+		}
 	}
 }
 
