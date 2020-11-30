@@ -10,7 +10,7 @@ type XRequest struct {
 	Conn xiface.IXConnection
 
 	// 客户端发送过来的数据
-	msg xiface.IXMessage
+	Message xiface.IXMessage
 }
 
 // GetConn 得到当前链接
@@ -20,10 +20,10 @@ func (r *XRequest) GetConn() xiface.IXConnection {
 
 // GetMsgData 得到请求的数据
 func (r *XRequest) GetMsgData() []byte {
-	return r.msg.GetData()
+	return r.Message.GetData()
 }
 
 // GetMsgID 得到请求的数据ID
 func (r *XRequest) GetMsgID() uint32 {
-	return r.msg.GetID()
+	return r.Message.GetID()
 }
