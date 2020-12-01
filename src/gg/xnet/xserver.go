@@ -24,6 +24,14 @@ type XServer struct {
 
 	// 路由，处理所有的connection
 	Router xiface.IXMessageRouter
+
+	// 连接管理器
+	ConnectionManager xiface.IXConnectionManager
+}
+
+// GetConnectionManager 获取连接管理器
+func (s *XServer) GetConnectionManager() (cm xiface.IXConnectionManager) {
+	return s.ConnectionManager
 }
 
 // Start 启动服务器
@@ -67,9 +75,16 @@ func (s *XServer) Start() {
 			continue
 		}
 
+		if s.ConnectionManager.Length() >= utils.GlobalObject.MaxConn {
+			fmt.Println("too many connections. MaxConn ", utils.GlobalObject.MaxConn)
+			// TODO: 发送超出最大连接数的包
+			conn.Close()
+			continue
+		}
+
 		fmt.Println("player incoming")
 
-		c := NewConnection(conn, connID, s.Router)
+		c := NewConnection(s, conn, connID, s.Router)
 		connID++
 
 		go c.Start()
@@ -78,6 +93,7 @@ func (s *XServer) Start() {
 
 // Stop 停止服务器
 func (s *XServer) Stop() {
+	s.ConnectionManager.Clear()
 }
 
 // Run 运行服务器
@@ -96,11 +112,12 @@ func NewXServer() xiface.IXServer {
 	utils.Init()
 
 	s := &XServer{
-		Name:      utils.GlobalObject.XServerName,
-		IPVersion: "tcp4",
-		IP:        utils.GlobalObject.Host,
-		Port:      utils.GlobalObject.Port,
-		Router:    NewXMessageRouter(),
+		Name:              utils.GlobalObject.XServerName,
+		IPVersion:         "tcp4",
+		IP:                utils.GlobalObject.Host,
+		Port:              utils.GlobalObject.Port,
+		Router:            NewXMessageRouter(),
+		ConnectionManager: NewXConnectionManager(),
 	}
 
 	utils.GlobalObject.TCPXServer = s

@@ -11,6 +11,9 @@ import (
 
 // XConnection 抽象的客户端链接
 type XConnection struct {
+	// 连接对应的服务器
+	Server xiface.IXServer
+
 	// 当前链接的socket
 	Conn *net.TCPConn
 
@@ -87,8 +90,8 @@ func (c *XConnection) StartReader() {
 
 		// 封装Request
 		request := XRequest{
-			Conn: c,
-			msg:  msg,
+			Conn:    c,
+			Message: msg,
 		}
 
 		if utils.GlobalObject.WorkerPoolSize > 0 {
@@ -130,6 +133,8 @@ func (c *XConnection) Stop() {
 	close(c.ExitChan)
 
 	close(c.MsgChan)
+
+	c.Server.GetConnectionManager().Remove(c)
 }
 
 // GetTCPConnection 获取当前链接绑定的socket
@@ -173,8 +178,9 @@ func (c *XConnection) SendMsg(id uint32, data []byte) error {
 }
 
 // NewConnection 初始化方法
-func NewConnection(conn *net.TCPConn, connID uint32, router xiface.IXMessageRouter) *XConnection {
+func NewConnection(server xiface.IXServer, conn *net.TCPConn, connID uint32, router xiface.IXMessageRouter) *XConnection {
 	connection := &XConnection{
+		Server:   server,
 		Conn:     conn,
 		ConnID:   connID,
 		Router:   router,
@@ -182,5 +188,8 @@ func NewConnection(conn *net.TCPConn, connID uint32, router xiface.IXMessageRout
 		ExitChan: make(chan bool, 1),
 		MsgChan:  make(chan []byte),
 	}
+
+	connection.Server.GetConnectionManager().Add(connection)
+
 	return connection
 }

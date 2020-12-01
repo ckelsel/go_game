@@ -39,7 +39,7 @@ type GlobalObj struct {
 	PatchVersion string
 
 	// 允许的最大连接数
-	MaxConn uint32
+	MaxConn int
 
 	// 数据包的最大值
 	MaxPacketSize uint32

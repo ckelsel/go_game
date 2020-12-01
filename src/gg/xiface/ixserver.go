@@ -13,4 +13,7 @@ type IXServer interface {
 
 	// AddRouter 用户自定义的路由功能
 	AddRouter(msgid uint32, router IXRouter)
+
+	// 获取连接管理器
+	GetConnectionManager() (cm IXConnectionManager)
 }
