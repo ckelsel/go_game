@@ -7,6 +7,7 @@ import (
 	"gg/xiface"
 	"io"
 	"net"
+	"sync"
 )
 
 // XConnection 抽象的客户端链接
@@ -31,6 +32,41 @@ type XConnection struct {
 
 	// 当前链接的路由
 	Router xiface.IXMessageRouter
+
+	// 属性集合
+	Property map[string]interface{}
+
+	// 属性互斥锁
+	PropertyMutex sync.RWMutex
+}
+
+// SetProperty 设置连接属性
+func (c *XConnection) SetProperty(key string, value interface{}) {
+	c.PropertyMutex.Lock()
+	defer c.PropertyMutex.Unlock()
+
+	c.Property[key] = value
+}
+
+// GetProperty 获取连接属性
+func (c *XConnection) GetProperty(key string) (interface{}, error) {
+	c.PropertyMutex.Lock()
+	defer c.PropertyMutex.Unlock()
+
+	value, success := c.Property[key]
+	if !success {
+		return nil, errors.New("Property not found")
+	}
+
+	return value, nil
+}
+
+// RemoveProperty 删除连接属性
+func (c *XConnection) RemoveProperty(key string) {
+	c.PropertyMutex.Lock()
+	defer c.PropertyMutex.Unlock()
+
+	delete(c.Property, key)
 }
 
 // StartWriter 循环读取channel，发送给客户端
@@ -188,6 +224,7 @@ func NewConnection(server xiface.IXServer, conn *net.TCPConn, connID uint32, rou
 		IsClosed: false,
 		ExitChan: make(chan bool, 1),
 		MsgChan:  make(chan []byte),
+		Property: make(map[string]interface{}),
 	}
 
 	connection.Server.GetConnectionManager().Add(connection)
