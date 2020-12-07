@@ -27,6 +27,16 @@ func (this *EchoRouter) PostHandle(request xiface.IXRequest) {
 	fmt.Println("PostHandle")
 }
 
+func OnStart(conn xiface.IXConnection) {
+	fmt.Println("OnStart")
+
+}
+
+func OnStop(conn xiface.IXConnection) {
+	fmt.Println("OnStop")
+
+}
+
 func main() {
 
 	s := xnet.NewXServer()
@@ -34,6 +44,7 @@ func main() {
 	router := EchoRouter{}
 
 	s.AddRouter(0, &router)
-
+	s.AddOnConnectionStartCallBack(OnStart)
+	s.AddOnConnectionStopCallBack(OnStop)
 	s.Run()
 }

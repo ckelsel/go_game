@@ -105,6 +105,7 @@ func (c *XConnection) StartReader() {
 // Start 启动链接，开始工作
 func (c *XConnection) Start() {
 	fmt.Println("Start, connID ", c.ConnID)
+	c.Server.OnConnectionStart(c)
 
 	go c.StartReader()
 
@@ -121,12 +122,12 @@ func (c *XConnection) Stop() {
 
 	c.IsClosed = true
 
-	// 通知Writer退出
-	//c.ExitChan <- true
+	c.Server.OnConnectionStop(c)
 
 	// 关闭sock
 	c.Conn.Close()
 
+	// 通知Writer退出
 	c.ExitChan <- true
 
 	// 释放资源

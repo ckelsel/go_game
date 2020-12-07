@@ -27,6 +27,36 @@ type XServer struct {
 
 	// 连接管理器
 	ConnectionManager xiface.IXConnectionManager
+
+	// 连接建立后的回调
+	OnConnectionStartCallBack func(conn xiface.IXConnection)
+
+	// 连接断开前的回调
+	OnConnectionStopCallBack func(conn xiface.IXConnection)
+}
+
+// AddOnConnectionStartCallBack 设置连接建立后的回调
+func (s *XServer) AddOnConnectionStartCallBack(onstart func(conn xiface.IXConnection)) {
+	s.OnConnectionStartCallBack = onstart
+}
+
+// AddOnConnectionStopCallBack 设置连接断开前的回调
+func (s *XServer) AddOnConnectionStopCallBack(onstop func(conn xiface.IXConnection)) {
+	s.OnConnectionStopCallBack = onstop
+}
+
+// OnConnectionStart 连接建立后的回调
+func (s *XServer) OnConnectionStart(conn xiface.IXConnection) {
+	if s.OnConnectionStartCallBack != nil {
+		s.OnConnectionStartCallBack(conn)
+	}
+}
+
+// OnConnectionStop 连接断开前的回调
+func (s *XServer) OnConnectionStop(conn xiface.IXConnection) {
+	if s.OnConnectionStopCallBack != nil {
+		s.OnConnectionStopCallBack(conn)
+	}
 }
 
 // GetConnectionManager 获取连接管理器
@@ -85,6 +115,7 @@ func (s *XServer) Start() {
 		fmt.Println("player incoming")
 
 		c := NewConnection(s, conn, connID, s.Router)
+
 		connID++
 
 		go c.Start()
@@ -112,12 +143,14 @@ func NewXServer() xiface.IXServer {
 	utils.Init()
 
 	s := &XServer{
-		Name:              utils.GlobalObject.XServerName,
-		IPVersion:         "tcp4",
-		IP:                utils.GlobalObject.Host,
-		Port:              utils.GlobalObject.Port,
-		Router:            NewXMessageRouter(),
-		ConnectionManager: NewXConnectionManager(),
+		Name:                      utils.GlobalObject.XServerName,
+		IPVersion:                 "tcp4",
+		IP:                        utils.GlobalObject.Host,
+		Port:                      utils.GlobalObject.Port,
+		Router:                    NewXMessageRouter(),
+		ConnectionManager:         NewXConnectionManager(),
+		OnConnectionStartCallBack: nil,
+		OnConnectionStopCallBack:  nil,
 	}
 
 	utils.GlobalObject.TCPXServer = s

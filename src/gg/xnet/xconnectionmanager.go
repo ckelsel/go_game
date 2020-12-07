@@ -47,11 +47,11 @@ func (cm *XConnectionManager) Get(connID uint32) (xiface.IXConnection, error) {
 	defer cm.Mutex.Unlock()
 
 	conn, success := cm.Connections[connID]
-	if success {
-		return conn, nil
-	} else {
+	if !success {
 		return nil, errors.New("connection not find")
 	}
+
+	return conn, nil
 }
 
 // Length 连接总数
