@@ -58,7 +58,7 @@ var GlobalObject *GlobalObj
 func (g *GlobalObj) Reload() {
 	data, err := ioutil.ReadFile("conf/gg.conf")
 	if err != nil {
-		fmt.Println("config/gg.conf not found")
+		fmt.Println("conf/gg.conf not found")
 		return
 	}
 
