@@ -141,11 +141,12 @@ func (c *XConnection) StartReader() {
 // Start 启动链接，开始工作
 func (c *XConnection) Start() {
 	fmt.Println("Start, connID ", c.ConnID)
-	c.Server.OnConnectionStart(c)
-
 	go c.StartReader()
 
 	go c.StartWriter()
+
+	// 最后调用回调，否则可能死锁
+	c.Server.OnConnectionStart(c)
 }
 
 // Stop 停止链接
