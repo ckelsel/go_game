@@ -58,7 +58,7 @@ func (wm *WorldManager) GetPlayerByPid(pid int32) *Player {
 }
 
 // 获取全部在线的玩家
-func (wm *WorldManager) GetAllPlayer(pid int32) []*Player {
+func (wm *WorldManager) GetAllPlayer() []*Player {
 	wm.PlayersMutex.Lock()
 	defer wm.PlayersMutex.Unlock()
 

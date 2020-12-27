@@ -3,6 +3,7 @@ package main
 import (
 	"gg/xiface"
 	"gg/xnet"
+	"mmo_game/apis"
 	"mmo_game/core"
 )
 
@@ -13,6 +14,8 @@ func OnConnect(conn xiface.IXConnection) {
 	player.SyncPid()
 
 	player.BroadCastStartPosition()
+
+	conn.SetProperty("pid", player.Pid)
 
 	core.WorldManagerObj.AddPlayer(player)
 }
@@ -26,6 +29,8 @@ func main() {
 
 	s.AddOnConnectionStartCallBack(OnConnect)
 	s.AddOnConnectionStopCallBack(OnDisconnect)
+
+	s.AddRouter(2, &apis.WorldChatAPI{})
 
 	s.Start()
 }
