@@ -21,7 +21,12 @@ func OnConnect(conn xiface.IXConnection) {
 }
 
 func OnDisconnect(conn xiface.IXConnection) {
-	// core.WorldManagerObj.RemovePlayerByPid(player.Pid)
+	pid, _ := conn.GetProperty("pid")
+
+	player := core.WorldManagerObj.GetPlayerByPid(pid.(int32))
+
+	player.Offline()
+
 }
 
 func main() {

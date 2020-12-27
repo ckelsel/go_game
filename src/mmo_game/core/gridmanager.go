@@ -143,12 +143,16 @@ func (m *GridManager) GetAllPlayerIDByGid(gid int) (players []int) {
 	return players
 }
 
-// AddPositionToGrid 通过坐标讲player添加到格子
-func (m *GridManager) AddPositionToGrid(x, y float32, gid int) {
-	m.Grids[gid].Add(m.GetGidByPosition(x, y))
+// AddPositionToGrid 通过坐标将player添加到格子
+func (m *GridManager) AddPositionToGrid(x, y float32, pid int) {
+	gid := m.GetGidByPosition(x, y)
+	grid := m.Grids[gid]
+	grid.Add(pid)
 }
 
 // RemovePositionFromGrid 通过坐标从格子删除player
-func (m *GridManager) RemovePositionFromGrid(x, y float32, gid int) {
-	m.Grids[gid].Remove(m.GetGidByPosition(x, y))
+func (m *GridManager) RemovePositionFromGrid(x, y float32, pid int) {
+	gid := m.GetGidByPosition(x, y)
+	grid := m.Grids[gid]
+	grid.Remove(pid)
 }

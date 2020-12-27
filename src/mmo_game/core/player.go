@@ -99,3 +99,32 @@ func (p *Player) Talk(content string) {
 		player.SendMessage(200, msg)
 	}
 }
+
+//获得当前玩家的AOI周边玩家信息
+func (p *Player) GetSurroundingPlayers() []*Player {
+	//得到当前AOI区域的所有pid
+	pids := WorldManagerObj.GM.GetAllPlayerIDByPosition(p.X, p.Z)
+
+	//将所有pid对应的Player放到Player切片中
+	players := make([]*Player, 0, len(pids))
+	for _, pid := range pids {
+		players = append(players, WorldManagerObj.GetPlayerByPid(int32(pid)))
+	}
+
+	return players
+}
+
+func (p *Player) Offline() {
+	players := p.GetSurroundingPlayers()
+
+	msg := &pb.SyncPid{
+		Pid: p.Pid,
+	}
+
+	for _, player := range players {
+		player.SendMessage(201, msg)
+	}
+
+	WorldManagerObj.GM.RemovePositionFromGrid(p.X, p.Z, (int)(p.Pid))
+	WorldManagerObj.RemovePlayerByPid(p.Pid)
+}
